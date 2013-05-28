@@ -1,4 +1,28 @@
+/**
+	Copyright (c) 2013, samnung
+	All rights reserved.
 
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	  list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	  this list of conditions and the following disclaimer in the documentation
+	  and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+	OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 
 #include <iostream>
 #include <vector>
@@ -25,6 +49,35 @@ typedef enum {
 typedef std::vector<std::string> string_list;
 
 
+
+float floatFromString(const std::string & str)
+{
+	std::stringstream ss(str);
+	float value;
+	ss >> value;
+
+	return value;
+}
+
+void printUsage(std::ostream & os = std::cout)
+{
+	os << "usage: maclight OPTION\n";
+	os << "OPTION:\n";
+	os << "--set-keyboard <number> | --sk <number>    set keyboard brightness\n";
+	os << "--get-keyboard          | --gk             get keyboard brightness\n";
+	os << "\n";
+	os << "--set-display <number>  | --sd <number>    set display brightness\n";
+	os << "--get-display           | --gd             get display brightness\n";
+	os << "\n";
+	os << "--display-sleep         | --ds             put display to sleep\n";
+	os << "--display-wake          | --dw             wake up display\n";
+	os << "\n";
+	os << "--get-sensor            | --gs             get display sensor value\n";
+	os << "\n\n";
+	os << "<number> = 0.0 – 1.0\n";
+}
+
+
 int main(int argc, char const *argv[])
 {
 	string_list args(argv, argv + argc);
@@ -39,25 +92,41 @@ int main(int argc, char const *argv[])
 		{
 			std::string & arg = args[i];
 
-			if ( arg == "--get-keyboard" )
+			if ( arg == "--get-keyboard" or arg == "--gk" )
+			{
 				arg_type = GET_KEYBOARD;
-			else if ( arg == "--set-keyboard" )
+			}
+			else if ( arg == "--set-keyboard" or arg == "--sk" )
 			{
 				arg_type = SET_KEYBOARD;
 				value = args.at(++i);
 			}
-			else if ( arg == "--get-display" )
+			else if ( arg == "--get-display" or arg == "--gd" )
+			{
 				arg_type = GET_DISPLAY;
-			else if ( arg == "--set-display" )
+			}
+			else if ( arg == "--set-display" or arg == "--sd" )
 			{
 				arg_type = SET_DISPLAY;
 				value = args.at(++i);
 			}
-			else if ( arg == "--display-sleep" )
+			else if ( arg == "--display-sleep" or arg == "--ds" )
+			{
 				arg_type = DISPLAY_SLEEP;
-			else if ( arg == "--display-wake" )
+			}
+			else if ( arg == "--display-wake" or arg == "--dw" )
+			{
 				arg_type = DISPLAY_WAKE;
-
+			}
+			else if ( arg == "--get-sensor" or arg == "--gs" )
+			{
+				arg_type = GET_SENSOR;
+			}
+			else if ( arg == "--help" or arg == "-h" )
+			{
+				printUsage();
+				return 0;
+			}
 			else
 			{
 				std::cerr << "error parsing arguments\n";
@@ -81,12 +150,9 @@ int main(int argc, char const *argv[])
 		}
 		case SET_KEYBOARD:
 		{
-			std::stringstream ss(value);
-			float brightness;
-			ss >> brightness;
-
-			std::cout << brightness << std::endl;
+			float brightness = floatFromString(value);
 			setKeyboardBrightness(brightness);
+			std::cout << getKeyboardBrightness() << std::endl;
 
 			break;
 		}
@@ -99,12 +165,9 @@ int main(int argc, char const *argv[])
 		}
 		case SET_DISPLAY:
 		{
-			std::stringstream ss(value);
-			float brightness;
-			ss >> brightness;
-
-			std::cout << brightness << std::endl;
+			float brightness = floatFromString(value);
 			setDisplayBrightness(brightness);
+			std::cout << getDisplayBrightness() << std::endl;
 
 			break;
 		}
@@ -127,7 +190,7 @@ int main(int argc, char const *argv[])
 		}
 		case UNKNOWN:
 		{
-			std::cerr << "usage:\n";
+			printUsage();
 			return 1;
 			break;
 		}

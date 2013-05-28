@@ -1,6 +1,28 @@
-/// lightsAndSensorsMacbook.c
+/**
+	Copyright (c) 2013, samnung
+	All rights reserved.
 
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
 
+	* Redistributions of source code must retain the above copyright notice, this
+	  list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	  this list of conditions and the following disclaimer in the documentation
+	  and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+	OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 
 enum {
 	kGetSensorReadingID = 0, // getSensorReading(int *, int *)
@@ -23,6 +45,7 @@ enum {
 #include <stdio.h>
 #include <IOKit/graphics/IOGraphicsLib.h>
 #include <ApplicationServices/ApplicationServices.h>
+#include <iostream>
 
 
 static io_connect_t dataPort = 0; // shared?
@@ -39,7 +62,7 @@ io_connect_t getDataPort(void)
 
 	if (!serviceObject)
 	{
-		printf("getLightSensors() error: failed to find ambient light sensor\n");
+		std::cerr << "getDataPort() error: failed to find ambient light sensor\n";
 		return 0;
 	}
 
@@ -49,7 +72,7 @@ io_connect_t getDataPort(void)
 
 	if (kr != KERN_SUCCESS)
 	{
-		printf("getLightSensors() error: failed to open IoService object\n");
+		std::cerr << "getDataPort() error: failed to open IoService object\n";
 		return 0;
 	}
 
@@ -77,7 +100,7 @@ void getLightSensors(float *left, float *right)
 
 	if (kr != KERN_SUCCESS)
 	{
-		//printf("error getting light sensor values\n");
+		std::cerr << "error getting light sensor values\n";
 		return;
 	}
 
@@ -147,7 +170,7 @@ float getKeyboardBrightness(void)
 
 	if (kr != KERN_SUCCESS)
 	{
-		printf("getKeyboardBrightness() error\n");
+		std::cerr << "getKeyboardBrightness() error\n";
 		return -1.0;
 	}
 
@@ -158,7 +181,6 @@ float getKeyboardBrightness(void)
 
 void setKeyboardBrightness(float in)
 {
-	// static io_connect_t dp = 0; // shared?
 	kern_return_t kr;
 
 	uint64_t inputCount  = 2;
@@ -186,7 +208,7 @@ void setKeyboardBrightness(float in)
 
 	if (kr != KERN_SUCCESS)
 	{
-		printf("setKeyboardBrightness() error\n");
+		std::cerr << "setKeyboardBrightness() error\n";
 		return;
 	}
 }

@@ -1,4 +1,63 @@
-/**
+# maclight
+
+Simple console tool to control lights on Mac or MacBook.
+
+# Usage
+
+	make
+	./maclight
+
+
+## Keyboard
+
+Set brightness
+
+	--set-keyboard <number>
+	--sk <number>
+
+	<number> = 0.0 – 1.0
+
+Get brightness
+
+	--get-keyboard
+	--gk
+
+
+## Display
+
+Set display brightness
+
+	--set-display <number>
+	--sd <number>
+
+	<number> = 0.0 – 1.0
+
+Get display brightness
+
+	--get-display
+	--gd
+
+Put display to sleep
+
+	--display-sleep
+	--ds
+
+Wake up display
+
+	--display-wake
+	--dw
+
+## Sensor
+
+Returns sensor two values between 0.0 ~ 20000.0 divided by space
+
+	--get-sensor
+	--gs
+
+
+
+# License
+
 	Copyright (c) 2013, samnung
 	All rights reserved.
 
@@ -22,13 +81,3 @@
 	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-
-void getLightSensors(float *left, float *right);
-float getDisplayBrightness(void);
-void setDisplayBrightness(float brightness);
-float getKeyboardBrightness(void);
-void setKeyboardBrightness(float in);
-
-void setDisplayWake(bool wake);
